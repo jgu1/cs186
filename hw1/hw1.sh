@@ -47,6 +47,8 @@ do
   
     ReleaseDate=$(sed -n 's/^Release Date: \([A-Za-z0-9, ]*\)\[EBook #\([0-9]*\).*$/"\1"/p'  "beforeStart/$book")
     ReleaseDate=$(echo "$ReleaseDate" | sed 's/\s*\"$/\"/g')		#trim the trailing spaces before quote    
+    #ReleaseDate=$(echo "$ReleaseDate" | sed 's/^\"\([a-zA-Z]* \d*\)\"/\1/')
+    ReleaseDate=$(echo "$ReleaseDate" | sed -r 's/^\"([a-zA-Z]+\s[0-9]+)\"/\1/')
     echo "$ReleaseDate" >> keywords/$book
  
 #   ReleaseDate=$(sed -n 's/^Release Date: \([A-Za-z0-9, ]*\)\[EBook #\([0-9]*\).*$/\1/p'  "beforeStart/$book")
