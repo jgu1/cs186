@@ -3,7 +3,6 @@
 INPUT_BOOK=$1
 SEP_BK_DIR="separatedBooks" 
 EBOOK_CSV_HEAD_LINE="title,author,release_date,ebook_id,language,body\r"
-#EBOOK_CSV_FILE="../my-hw1ebook.csv"
 EBOOK_CSV_FILE="../ebook.csv"
 TOKENS_CSV_HEAD_LINE="ebook_id,token\r"
 TOKENS_CSV_FILE="../tokens.csv"
@@ -15,7 +14,6 @@ NAME_COUNTS_CSV_HEAD_LINE="token,count\r"
 NAME_COUNTS_CSV_FILE="../name_counts.csv"
 rm -rf $SEP_BK_DIR
 mkdir -p $SEP_BK_DIR
-#awk '{print $0 > "separatedBooks/book-"NR".txt"}' RS='[\*]+ END OF THE PROJECT GUTENBERG [^\*]+[\*]+' $INPUT_BOOK 
 awk '{print $0 > "separatedBooks/book-"NR".txt";close("separatedBooks/book-"NR".txt")}' RS='[\*]+ END OF THE PROJECT GUTENBERG [^\*]+[\*]+' $INPUT_BOOK 
 
 
@@ -29,7 +27,6 @@ mkdir -p beforeStart
 for book in *.txt
 do
 #   generate the keyword-files and body-files
-#   sed -i 's/\r//g' $book    #remove carriage return
     awk -v bookname="beforeStart/$book" 'NR==1{print $0 > bookname; close(Infile); close(bookname)}' Infile="$book" RS='START OF THE PROJECT GUTENBERG [^\*]+[\*]+' $book 
     Title=$(sed -n 's/^Title: \(.*\)$/\1/p' "beforeStart/$book")
     Title=$(echo "$Title" | sed 's/\"/\"\"/g')				#replace double quote with "dobule" double quote
@@ -51,17 +48,9 @@ do
   
     ReleaseDate=$(sed -nr 's/^Release Date: ([A-Za-z0-9, ]*)\[(EBook|Etext|eBook) #[0-9]+.*$/"\1"/p' "beforeStart/$book")
     ReleaseDate=$(echo "$ReleaseDate" | sed 's/\s*\"$/\"/g')		#trim the trailing spaces before quote    
-    #ReleaseDate=$(echo "$ReleaseDate" | sed 's/^\"\([a-zA-Z]* \d*\)\"/\1/')
     ReleaseDate=$(echo "$ReleaseDate" | sed -r 's/^\"([a-zA-Z]+\s[0-9]+)\"/\1/')
     echo "$ReleaseDate" >> keywords/$book
- 
-#   ReleaseDate=$(sed -n 's/^Release Date: \([A-Za-z0-9, ]*\)\[EBook #\([0-9]*\).*$/\1/p'  "beforeStart/$book")
-#    ReleaseDate=$(echo "$ReleaseDate" | sed 's/\s*$//g')		#trim the trailing spaces before quote    
-#    if [[ "$ReleaseDate" == *','* ]]; then
-#        Author=$(echo "$ReleaseDate" | sed -e 's/^/\"/' -e 's/$/\"/')
-#    fi
-#    echo "$ReleaseDate" >> keywords/$book
-    
+
     BookNo=$(sed -nr 's/^Release Date: [A-Za-z0-9, ]*\[(EBook|Etext|eBook) #([0-9]+).*$/\2/p' "beforeStart/$book")
     echo "$BookNo" >> keywords/$book
   
