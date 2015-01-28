@@ -45,7 +45,7 @@ do
     fi
     echo "$Author" >> keywords/$book
   
-    ReleaseDate=$(sed -n 's/^Release Date: \([A-Za-z0-9, ]*\)\[EBook #\([0-9]*\).*$/"\1"/p'  "beforeStart/$book")
+    ReleaseDate=$(sed -nr 's/^Release Date: ([A-Za-z0-9, ]*)\[(EBook|Etext) #[0-9]+.*$/"\1"/p' "beforeStart/$book")
     ReleaseDate=$(echo "$ReleaseDate" | sed 's/\s*\"$/\"/g')		#trim the trailing spaces before quote    
     #ReleaseDate=$(echo "$ReleaseDate" | sed 's/^\"\([a-zA-Z]* \d*\)\"/\1/')
     ReleaseDate=$(echo "$ReleaseDate" | sed -r 's/^\"([a-zA-Z]+\s[0-9]+)\"/\1/')
@@ -58,7 +58,7 @@ do
 #    fi
 #    echo "$ReleaseDate" >> keywords/$book
     
-    BookNo=$(sed -n 's/^Release Date: \([A-Za-z0-9, ]*\)\[EBook #\([0-9]*\).*$/\2/p' "beforeStart/$book")
+    BookNo=$(sed -nr 's/^Release Date: [A-Za-z0-9, ]*\[(EBook|Etext) #([0-9]+).*$/\2/p' "beforeStart/$book")
     echo "$BookNo" >> keywords/$book
   
     Language=$(sed -n 's/^Language: \(.*\)$/\1/p' "beforeStart/$book")
